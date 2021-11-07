@@ -1,4 +1,5 @@
 import React from 'react';
+import Modal from '../Modal';
 import './Board.css'
 import {
   FaSave,
@@ -11,7 +12,7 @@ class Board extends React.Component<any, any> {
     super(props);
 
     this.state = {
-      board: new Array(7).fill(new Array(6).fill(null)),
+      board: new Array(6).fill(new Array(7).fill(null)),
       player: 1
     }
   }
@@ -24,6 +25,7 @@ class Board extends React.Component<any, any> {
     const {board, player} = this.state;
     return (
       <div className="container">
+        <Modal />
         <div className="controls-top">
           <div className="undo-redo-container">
             <button title="Undo" className="ctrl-btn" style={{marginRight: '10%'}}><IoIosUndo/></button>
