@@ -1,0 +1,70 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.board {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.column {
+    display: flex;
+    height: 10vh;
+    width: 50vw;
+    background-color: lightblue;
+}
+
+.cell {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.content {
+    width: 70%;
+    height: 70%;
+    background-color: white;
+    font-size: small;
+}
+
+.controls-top {
+    display: flex;
+    justify-content: space-between;
+    width: 50vw;
+    margin-bottom: 2%;
+}
+
+.player-container {
+    margin-top: 2%;
+    display: flex;
+    width: 50vw;
+    justify-content: center;
+}
+
+.player-color {
+    width: 15px;
+    height: 15px;
+    background-color: red;
+    display: inline-flex;
+}
+
+.player-label {
+    margin-right: 1%;
+}
+
+.ctrl-btn {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 20%;
+    border-color: lightblue;
+}
+
+.undo-redo-container {
+    display: flex;
+}
