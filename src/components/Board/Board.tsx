@@ -13,8 +13,13 @@ class Board extends React.Component<any, any> {
 
     this.state = {
       board: new Array(6).fill(new Array(7).fill(null)),
-      player: 1
+      player: 1,
+      showModal: true,
     }
+  }
+
+  onModalClose = () => {
+    this.setState({showModal: false});
   }
 
   makeMove(row: number, column: number) {
@@ -25,7 +30,11 @@ class Board extends React.Component<any, any> {
     const {board, player} = this.state;
     return (
       <div className="container">
-        <Modal />
+        { this.state.showModal && (
+          <Modal onPrimaryClick={this.onModalClose} primaryLabel="Close">
+            <h1>MODAL CONTENT!</h1>
+          </Modal>
+        )}
         <div className="controls-top">
           <div className="undo-redo-container">
             <button title="Undo" className="ctrl-btn" style={{marginRight: '10%'}}><IoIosUndo/></button>

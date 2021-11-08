@@ -1,40 +1,36 @@
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 import BootstrapModal from 'react-bootstrap/Modal';
 import Button from "react-bootstrap/Button";
 
+interface ModalProps {
+  primaryLabel: string;
+  onPrimaryClick: MouseEventHandler<HTMLElement>;
+  secondaryLabel?: string;
+  onSecondaryClick?: MouseEventHandler<HTMLElement>;
+  secondary?: Boolean;
+  children?: React.ReactNode;
+}
 
-class Modal extends React.Component<any, any> {
-  constructor(props: any) {
-    super(props);
+const Modal = ({
+                 primaryLabel,
+                 secondaryLabel,
+                 onPrimaryClick,
+                 onSecondaryClick,
+                 secondary = false,
+                 children
+               }: ModalProps): JSX.Element => {
 
-    this.state = {
-      showModal: true,
-    }
-  }
-
-  handleClose = () => this.setState({...this.state, showModal: false});
-  handleShow = () => this.setState({...this.state, showModal: true});
-
-  render() {
-
-    const { showModal } = this.state;
-    return (
-      <BootstrapModal show={showModal} onHide={this.handleClose} centered>
-        <BootstrapModal.Header closeButton>
-          <BootstrapModal.Title>Modal heading</BootstrapModal.Title>
-        </BootstrapModal.Header>
-        <BootstrapModal.Body>Woohoo, you're reading this text in a modal!</BootstrapModal.Body>
-        <BootstrapModal.Footer>
-          <Button variant="secondary" onClick={this.handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={this.handleClose}>
-            Save Changes
-          </Button>
-        </BootstrapModal.Footer>
-      </BootstrapModal>
-    );
-  }
+  return (
+    <BootstrapModal show centered>
+      <BootstrapModal.Body>{children}</BootstrapModal.Body>
+      <BootstrapModal.Footer>
+        {secondary &&
+          <Button variant="secondary" onClick={onSecondaryClick}>{secondaryLabel}</Button>
+        }
+        <Button variant="primary" onClick={onPrimaryClick}>{primaryLabel}</Button>
+      </BootstrapModal.Footer>
+    </BootstrapModal>
+  );
 }
 
 export default Modal;
