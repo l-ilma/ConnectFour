@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
 .board {
@@ -10,14 +11,14 @@
     align-items: center;
 }
 
-.column {
+.board-row {
     display: flex;
     height: 10vh;
     width: 50vw;
     background-color: lightblue;
 }
 
-.cell {
+.board-cell {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -25,7 +26,7 @@
     flex: 1;
 }
 
-.content {
+.cell-content {
     width: 70%;
     height: 70%;
     background-color: white;
@@ -46,11 +47,19 @@
     justify-content: center;
 }
 
-.player-color {
+.player-color-point {
     width: 15px;
     height: 15px;
-    background-color: red;
     display: inline-flex;
+    margin-top: 4px;
+}
+
+.player-r {
+    background-color: red;
+}
+
+.player-b {
+    background-color: darkblue;
 }
 
 .player-label {

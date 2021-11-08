@@ -1,12 +1,8 @@
+import {Point} from "../interfaces/point";
+
 enum Player {
   BLUE = 'b',
   RED = 'r',
-}
-
-interface Point {
-  x: number;
-  y: number;
-  player: Player;
 }
 
 class Game {
