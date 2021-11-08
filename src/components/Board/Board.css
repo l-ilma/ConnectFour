@@ -14,7 +14,7 @@
 .board-row {
     display: flex;
     height: 10vh;
-    width: 50vw;
+    width: 40vw;
     background-color: lightblue;
 }
 
@@ -36,14 +36,14 @@
 .controls-top {
     display: flex;
     justify-content: space-between;
-    width: 50vw;
+    width: 40vw;
     margin-bottom: 2%;
 }
 
 .player-container {
     margin-top: 2%;
     display: flex;
-    width: 50vw;
+    width: 40vw;
     justify-content: center;
 }
 
