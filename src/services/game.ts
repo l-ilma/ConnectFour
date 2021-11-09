@@ -13,6 +13,7 @@ class Game {
 
 class GameBuilder {
   private game: Game = new Game();
+
   constructor() {
     this.reset();
   }

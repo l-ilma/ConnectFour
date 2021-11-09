@@ -1,40 +1,43 @@
-import React from 'react';
+import React, {MouseEventHandler} from 'react';
 import BootstrapModal from 'react-bootstrap/Modal';
 import Button from "react-bootstrap/Button";
 
+interface ModalProps {
+  header?: string,
+  primaryLabel: string;
+  onPrimaryClick: MouseEventHandler<HTMLElement>;
+  secondaryLabel?: string;
+  onSecondaryClick?: MouseEventHandler<HTMLElement>;
+  secondary?: Boolean;
+  children?: React.ReactNode;
+  centeredFooter?: Boolean
+}
 
-class Modal extends React.Component<any, any> {
-  constructor(props: any) {
-    super(props);
+const Modal = ({
+                 header,
+                 primaryLabel,
+                 secondaryLabel,
+                 onPrimaryClick,
+                 onSecondaryClick,
+                 secondary = false,
+                 children,
+                 centeredFooter = true
+               }: ModalProps): JSX.Element => {
 
-    this.state = {
-      showModal: true,
-    }
-  }
-
-  handleClose = () => this.setState({...this.state, showModal: false});
-  handleShow = () => this.setState({...this.state, showModal: true});
-
-  render() {
-
-    const { showModal } = this.state;
-    return (
-      <BootstrapModal show={showModal} onHide={this.handleClose} centered>
-        <BootstrapModal.Header closeButton>
-          <BootstrapModal.Title>Modal heading</BootstrapModal.Title>
-        </BootstrapModal.Header>
-        <BootstrapModal.Body>Woohoo, you're reading this text in a modal!</BootstrapModal.Body>
-        <BootstrapModal.Footer>
-          <Button variant="secondary" onClick={this.handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={this.handleClose}>
-            Save Changes
-          </Button>
-        </BootstrapModal.Footer>
-      </BootstrapModal>
-    );
-  }
+  return (
+    <BootstrapModal show centered>
+      {header && (
+        <BootstrapModal.Header style={{justifyContent: 'center'}}>{header}</BootstrapModal.Header>
+      )}
+      <BootstrapModal.Body>{children}</BootstrapModal.Body>
+      <BootstrapModal.Footer style={{justifyContent: centeredFooter === true ? 'center' : 'flex-end'}}>
+        {secondary &&
+        <Button onClick={onSecondaryClick}>{secondaryLabel}</Button>
+        }
+        <Button onClick={onPrimaryClick}>{primaryLabel}</Button>
+      </BootstrapModal.Footer>
+    </BootstrapModal>
+  );
 }
 
 export default Modal;

@@ -6,8 +6,10 @@ import {
   IoIosRedo,
   IoIosUndo,
 } from "react-icons/all";
-import {Player} from "../../services/game";
-import {Point} from "../../interfaces/point";
+import GameType from '../GameType';
+import {GameMode} from '../../constants';
+import {Player} from '../../services/game';
+import {Point} from '../../interfaces/point';
 
 class Board extends React.Component<any, any> {
   constructor(props: any) {
@@ -16,30 +18,12 @@ class Board extends React.Component<any, any> {
     this.state = {
       board: Array.from(Array(6), () => new Array(7).fill(null)),
       player: Player.RED, // red plays first // red is new white
-      winner: null
+      winner: null,
+      gameMode: null,
+      showGameTypeModal: true,
+      showGameModeModal: false,
+      showFileUploadModal: false,
     }
-  }
-
-  togglePlayer(): void {
-    this.state.player === Player.RED ?
-      this.setState({player: Player.BLUE}) :
-      this.setState({player: Player.RED});
-  }
-
-  makeMove(column: number): void {
-    const {board, player} = this.state;
-    for (let i = board.length - 1; i >= 0; i--) {
-      if (board[i][column] === null) {
-        board[i][column] = {x: i, y: column, player};
-        this.checkBoard(i, column);
-        this.togglePlayer();
-        break;
-      }
-    }
-  }
-
-  setWinner(winner: Player) {
-    this.setState({winner});
   }
 
   checkBoard(row: number, column: number): void {
@@ -106,6 +90,76 @@ class Board extends React.Component<any, any> {
     }
   }
 
+  onModalClose = () => {
+    this.setState({showGameTypeModal: false});
+  }
+
+  togglePlayer(): void {
+    this.state.player === Player.RED ?
+      this.setState({player: Player.BLUE}) :
+      this.setState({player: Player.RED});
+  }
+
+  makeMove(column: number): void {
+    const {board, player} = this.state;
+    for (let i = board.length - 1; i >= 0; i--) {
+      if (board[i][column] === null) {
+        board[i][column] = {x: i, y: column, player};
+        this.checkBoard(i, column);
+        this.togglePlayer();
+        break;
+      }
+    }
+  }
+
+  setWinner(winner: Player) {
+    this.setState({winner});
+  }
+
+  onVsPlayer = () => {
+    this.setState({gameMode: GameMode.PVP});
+  };
+
+  onVsComputer = () => {
+    this.setState({gameMode: GameMode.PVC});
+  };
+
+  renderCorrectModal = () => {
+    const {showGameTypeModal, showGameModeModal, showFileUploadModal} = this.state;
+
+    if (showGameTypeModal) {
+      return Modal({
+        onPrimaryClick: this.onModalClose,
+        primaryLabel: 'Resume game',
+        onSecondaryClick: this.onModalClose,
+        secondaryLabel: 'Create game',
+        secondary: true,
+        children: (
+          <div className="div--centered">
+            Do you want to create new game or resume an existing one?
+          </div>
+        )
+      });
+    }
+
+    if (showGameModeModal) {
+      return Modal({
+        onPrimaryClick: this.onModalClose,
+        primaryLabel: 'Confirm',
+        header: 'Mode selection',
+        children: (
+          <div className="div--centered">
+            <GameType onVsPlayerClick={this.onVsPlayer} onVsComputerClick={this.onVsComputer}/>
+          </div>
+        )
+      });
+    }
+
+    if (showFileUploadModal) {
+      //TODO;
+    }
+  };
+
   hasWon(board: Array<Array<Point>>,
          j: number,
          i: number,
@@ -135,8 +189,11 @@ class Board extends React.Component<any, any> {
     const {board, player, winner} = this.state;
     return (
       <div className="container">
-        <Modal/>
-        {winner ? <Modal/> : null}
+        {this.renderCorrectModal()}
+        {winner && (
+          //@ts-ignore
+          <Modal onPrimaryClick={() => this.setWinner(null)} primaryLabel="Reset game"/>
+        )}
         <div className="controls-top">
           <div className="undo-redo-container">
             <button title="Undo" className="ctrl-btn" style={{marginRight: '10%'}}><IoIosUndo/></button>
