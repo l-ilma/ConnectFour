@@ -5,21 +5,21 @@ enum Player {
   RED = 'r',
 }
 
-class Game {
+class GameService {
   public positions: Array<Point> = [];
   public moves: Array<Point> = [];
   public firstMove: Player = Player.RED;
 }
 
 class GameBuilder {
-  private game: Game = new Game();
+  private game: GameService = new GameService();
 
   constructor() {
     this.reset();
   }
 
   public reset(): void {
-    this.game = new Game();
+    this.game = new GameService();
   }
 
   public addPositions(positions: Array<Point>): GameBuilder {
@@ -37,7 +37,7 @@ class GameBuilder {
     return this;
   }
 
-  public build(): Game {
+  public build(): GameService {
     const result = this.game;
     this.reset();
     return result;
@@ -45,7 +45,7 @@ class GameBuilder {
 }
 
 export {
-  Game,
+  GameService,
   GameBuilder,
   Player,
 }

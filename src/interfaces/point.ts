@@ -1,4 +1,4 @@
-import {Player} from "../services/game";
+import {Player} from "../services/game.service";
 
 export interface Point {
   x: number;

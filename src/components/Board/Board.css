@@ -33,13 +33,6 @@
     font-size: small;
 }
 
-.controls-top {
-    display: flex;
-    justify-content: space-between;
-    width: 40vw;
-    margin-bottom: 2%;
-}
-
 .player-container {
     margin-top: 2%;
     display: flex;
@@ -64,16 +57,4 @@
 
 .player-label {
     margin-right: 1%;
-}
-
-.ctrl-btn {
-    width: 40px;
-    height: 40px;
-    background: white;
-    border-radius: 20%;
-    border-color: lightblue;
-}
-
-.undo-redo-container {
-    display: flex;
 }

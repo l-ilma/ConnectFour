@@ -1,0 +1,18 @@
+.controls {
+    display: flex;
+    justify-content: space-between;
+    width: 40vw;
+    margin-bottom: 2%;
+}
+
+.controls__btn-container {
+    display: flex;
+}
+
+.btn--ctrl {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 20%;
+    border-color: lightblue;
+}
