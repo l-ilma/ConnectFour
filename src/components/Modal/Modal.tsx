@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from 'react';
+import React, {MouseEventHandler} from 'react';
 import BootstrapModal from 'react-bootstrap/Modal';
 import Button from "react-bootstrap/Button";
 
@@ -26,13 +26,13 @@ const Modal = ({
 
   return (
     <BootstrapModal show centered>
-      { header && (
-        <BootstrapModal.Header style={{ justifyContent: 'center' }}>{header}</BootstrapModal.Header>
+      {header && (
+        <BootstrapModal.Header style={{justifyContent: 'center'}}>{header}</BootstrapModal.Header>
       )}
       <BootstrapModal.Body>{children}</BootstrapModal.Body>
-      <BootstrapModal.Footer style={{ justifyContent: centeredFooter === true ? 'center' : 'flex-end' }}>
+      <BootstrapModal.Footer style={{justifyContent: centeredFooter === true ? 'center' : 'flex-end'}}>
         {secondary &&
-          <Button onClick={onSecondaryClick}>{secondaryLabel}</Button>
+        <Button onClick={onSecondaryClick}>{secondaryLabel}</Button>
         }
         <Button onClick={onPrimaryClick}>{primaryLabel}</Button>
       </BootstrapModal.Footer>

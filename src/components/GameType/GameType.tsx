@@ -2,14 +2,14 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import {RiComputerLine, IoMan} from 'react-icons/all';
 import './GameType.css';
-import { MouseEventHandler } from "react";
+import {MouseEventHandler} from "react";
 
 interface GameTypeProps {
   onVsPlayerClick: MouseEventHandler<HTMLElement>;
   onVsComputerClick: MouseEventHandler<HTMLElement>;
 }
 
-const GameType = ({ onVsPlayerClick, onVsComputerClick }: GameTypeProps) => {
+const GameType = ({onVsPlayerClick, onVsComputerClick}: GameTypeProps) => {
   return (
     <div>
       <ButtonGroup>

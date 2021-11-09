@@ -1,12 +1,8 @@
+import {Point} from "../interfaces/point";
+
 enum Player {
   BLUE = 'b',
   RED = 'r',
-}
-
-interface Point {
-  x: number;
-  y: number;
-  player: Player;
 }
 
 class Game {
@@ -17,6 +13,7 @@ class Game {
 
 class GameBuilder {
   private game: Game = new Game();
+
   constructor() {
     this.reset();
   }

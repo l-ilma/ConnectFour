@@ -1,7 +1,8 @@
 class File {
   private static fileInstance: File;
 
-  private constructor() { }
+  private constructor() {
+  }
 
   public static getInstance(): File {
     if (!File.fileInstance) {
