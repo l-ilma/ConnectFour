@@ -43,6 +43,7 @@ class Board extends React.Component<any, any> {
     // find 4 of the same colour
     if (left) {
       if (this.hasWon(board, column - 1, row, color, (j: number) => --j, (i: number) => i)) {
+        this.setWinner(color);
         return;
       }
     }
