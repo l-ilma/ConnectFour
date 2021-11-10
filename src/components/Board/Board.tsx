@@ -83,11 +83,16 @@ const Board = () => {
     }
   };
 
-  const onUndoClick = () => {
-    console.log('undoClick parent', currentMove)
+  const onUndoClick = (previousMove: Point | null) => {
     if (currentMove) {
       board[currentMove.x][currentMove.y] = null;
     }
+    setCurrentMove(previousMove);
+    setPlayer(previousMove ?
+      previousMove.player === Player.RED ?
+        Player.BLUE :
+        Player.RED :
+      Player.RED);
   }
 
   return (

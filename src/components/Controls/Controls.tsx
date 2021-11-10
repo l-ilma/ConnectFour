@@ -8,8 +8,7 @@ const Controls = ({onUndoClick}: any) => {
   const [file] = useState<FileService>(FileService.getInstance())
 
   const undoMove = () => {
-    onUndoClick();
-    console.log('child undo')
+    onUndoClick(file.getPreviousMove());
   }
 
   const redoMove = () => {
