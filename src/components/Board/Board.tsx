@@ -18,7 +18,8 @@ const Board = () => {
   const [showGameTypeModal, setShowGameTypeModal] = useState(true);
   const [showGameModeModal, setShowGameModeModal] = useState(false);
   const [showFileUploadModal, setShowFileUploadModal] = useState(false);
-  const [file] = useState<FileService>(FileService.getInstance())
+
+  const file = FileService.getInstance();
 
   const onModalClose = (): void => {
     setShowGameTypeModal(false);
@@ -30,7 +31,6 @@ const Board = () => {
         const move = {x: i, y: column, player};
         board[i][column] = move;
         file.lastMove = move;
-        console.log('file', file)
         setCurrentMove(move);
         setWinner(BoardService.getWinner(board, i, column));
         player === Player.RED ? setPlayer(Player.BLUE) : setPlayer(Player.RED);
@@ -95,6 +95,19 @@ const Board = () => {
       Player.RED);
   }
 
+  const onRedoClick = (nextMove: Point | null) => {
+    if (nextMove) {
+      board[nextMove.x][nextMove.y] = nextMove;
+      setCurrentMove(nextMove);
+      // @ts-ignore
+      setPlayer(nextMove ?
+        nextMove.player === Player.RED ?
+          Player.BLUE :
+          Player.RED :
+        currentMove?.player);
+    }
+  }
+
   return (
     <div className="container">
       {renderCorrectModal()}
@@ -102,7 +115,7 @@ const Board = () => {
         //@ts-ignore
         <Modal onPrimaryClick={() => setWinner(null)} primaryLabel="Reset game"/>
       )}
-      <Controls onUndoClick={onUndoClick}/>
+      <Controls onUndoClick={onUndoClick} onRedoClick={onRedoClick}/>
       <div className="board">
         {board.map((column, i: number) =>
           (
@@ -111,6 +124,7 @@ const Board = () => {
                 <div key={i + j} className="board-cell">
                   <div className={board[i][j] !== null ? "cell-content player-" + board[i][j].player : "cell-content"}
                        onClick={() => makeMove(j)}>
+                    {/*({i}, {j})*/}
                   </div>
                 </div>
               ))}
