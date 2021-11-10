@@ -6,15 +6,19 @@ import {GameMode} from '../../constants';
 import {Player} from '../../services/game.service';
 import BoardService from '../../services/board.service';
 import Controls from '../Controls';
+import {FileService} from "../../services/file.service";
+import {Point} from "../../interfaces/point";
 
 const Board = () => {
   const [board, setBoard] = useState(Array.from(Array(6), () => new Array(7).fill(null)));
   const [player, setPlayer] = useState(Player.RED);
+  const [currentMove, setCurrentMove] = useState<Point | null>(null);
   const [winner, setWinner] = useState<Player | null>(null);
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
   const [showGameTypeModal, setShowGameTypeModal] = useState(true);
   const [showGameModeModal, setShowGameModeModal] = useState(false);
   const [showFileUploadModal, setShowFileUploadModal] = useState(false);
+  const [file] = useState<FileService>(FileService.getInstance())
 
   const onModalClose = (): void => {
     setShowGameTypeModal(false);
@@ -23,7 +27,11 @@ const Board = () => {
   const makeMove = (column: number): void => {
     for (let i = board.length - 1; i >= 0; i--) {
       if (board[i][column] === null) {
-        board[i][column] = {x: i, y: column, player};
+        const move = {x: i, y: column, player};
+        board[i][column] = move;
+        file.lastMove = move;
+        console.log('file', file)
+        setCurrentMove(move);
         setWinner(BoardService.getWinner(board, i, column));
         player === Player.RED ? setPlayer(Player.BLUE) : setPlayer(Player.RED);
         break;
@@ -33,10 +41,12 @@ const Board = () => {
 
   const onVsPlayer = (): void => {
     setGameMode(GameMode.PVP);
+    file.gameMode = GameMode.PVP;
   };
 
   const onVsComputer = (): void => {
     setGameMode(GameMode.PVC);
+    file.gameMode = GameMode.PVC;
   };
 
   const renderCorrectModal = (): React.ReactNode => {
@@ -73,6 +83,13 @@ const Board = () => {
     }
   };
 
+  const onUndoClick = () => {
+    console.log('undoClick parent', currentMove)
+    if (currentMove) {
+      board[currentMove.x][currentMove.y] = null;
+    }
+  }
+
   return (
     <div className="container">
       {renderCorrectModal()}
@@ -80,11 +97,11 @@ const Board = () => {
         //@ts-ignore
         <Modal onPrimaryClick={() => setWinner(null)} primaryLabel="Reset game"/>
       )}
-      <Controls/>
+      <Controls onUndoClick={onUndoClick}/>
       <div className="board">
         {board.map((column, i: number) =>
           (
-            <div key={i} className='board-row'>
+            <div key={i} className="board-row">
               {column.map((row: any, j: number) => (
                 <div key={i + j} className="board-cell">
                   <div className={board[i][j] !== null ? "cell-content player-" + board[i][j].player : "cell-content"}
