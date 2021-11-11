@@ -1,12 +1,13 @@
-import {Point} from "../interfaces/point";
-import {GameMode} from "../constants";
+import {Point} from '../interfaces/point';
+import {GameMode} from '../constants';
 
 class FileService {
   private static fileInstance: FileService;
   private _moves: Array<Point> = [];
   private _gameMode: GameMode | null = null;
   private _currentMoveIndex: number = -1;
-  private undoDone = false;
+  private _overwriteFlag = false;
+  private _gameOver: boolean = false;
 
   private constructor() {
   }
@@ -32,7 +33,7 @@ class FileService {
       this._moves = [];
     }
 
-    this.undoDone && this._moves.length !== 0 ?
+    this._overwriteFlag && this._moves.length !== 0 ?
       this._moves[this.currentMoveIndex + 1] = point :
       this._moves.push(point);
     this._currentMoveIndex++;
@@ -46,19 +47,31 @@ class FileService {
     return this._moves.length;
   }
 
+  public get exportContent() {
+    return {
+      gameMode: this.gameMode,
+      moves: this._moves.slice(0, this.currentMoveIndex + 1),
+      gameOver: this._gameOver
+    }
+  }
+
+  public set gameOver(gameOver: boolean) {
+    this._gameOver = gameOver;
+  }
+
   public getPreviousMove(): Point | null {
     if (this._currentMoveIndex > 0) {
-      this.undoDone = true;
+      this._overwriteFlag = true;
       return this._moves[--this._currentMoveIndex];
     } else {
       this._currentMoveIndex = -1;
-      this.undoDone = false;
+      this._overwriteFlag = false;
       return null;
     }
   }
 
   public getNextMove(): Point | null {
-    this.undoDone = false;
+    this._overwriteFlag = false;
     if (this._currentMoveIndex < this._moves.length - 1) {
       return this._moves[++this._currentMoveIndex];
     } else {

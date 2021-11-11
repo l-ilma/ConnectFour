@@ -6,8 +6,8 @@ import {GameMode} from '../../constants';
 import {Player} from '../../services/game.service';
 import BoardService from '../../services/board.service';
 import Controls from '../Controls';
-import {FileService} from "../../services/file.service";
-import {Point} from "../../interfaces/point";
+import {FileService} from '../../services/file.service';
+import {Point} from '../../interfaces/point';
 
 const Board = () => {
   const [board, setBoard] = useState(Array.from(Array(6), () => new Array(7).fill(null)));
@@ -28,11 +28,16 @@ const Board = () => {
   const makeMove = (column: number): void => {
     for (let i = board.length - 1; i >= 0; i--) {
       if (board[i][column] === null) {
+        // set move
         const move = {x: i, y: column, player};
         board[i][column] = move;
         file.lastMove = move;
         setCurrentMove(move);
-        setWinner(BoardService.getWinner(board, i, column));
+        // check for winner
+        const winner = BoardService.getWinner(board, i, column)
+        setWinner(winner);
+        if (winner) file.gameOver = true;
+        // switch player
         player === Player.RED ? setPlayer(Player.BLUE) : setPlayer(Player.RED);
         break;
       }
