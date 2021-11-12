@@ -1,18 +1,17 @@
 import React from 'react';
 import {FaSave, IoIosRedo, IoIosUndo} from 'react-icons/all';
 import './Controls.css';
-import GameHistoryService from '../../services/gameHistory.service';
-import {Point} from '../../interfaces/point';
+import GameHistoryService from '../../services/game-history.service';
 
 interface ControlsProps {
-  onUndoClick: (prevMove: Point | null) => void;
-  onRedoClick: (nextMove: Point | null) => void;
+  onUndoClick: (prevMove: number) => void;
+  onRedoClick: (nextMove: number) => void;
 }
 
 const Controls = ({onUndoClick, onRedoClick}: ControlsProps) => {
   const history = GameHistoryService.getInstance();
   const undoMove = () => {
-    onUndoClick(history.getPreviousMove());
+    onUndoClick(history.getPreviousMoveIndex());
   }
 
   const redoMove = () => {

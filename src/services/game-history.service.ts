@@ -1,16 +1,16 @@
 import {Point} from '../interfaces/point';
 import {GameMode} from '../constants';
-import {isSameMove} from '../utils';
+import BoardService from "./board.service";
 
 class GameHistoryService {
   private static history: GameHistoryService;
   private _moves: Array<Point> = [];
   private _gameMode: GameMode | null = null;
   private _currentMoveIndex: number = -1;
-  private _overwriteFlag = false;
   private _gameOver: boolean = false;
 
-  private constructor() {}
+  private constructor() {
+  }
 
   public static getInstance(): GameHistoryService {
     if (!GameHistoryService.history) {
@@ -33,14 +33,15 @@ class GameHistoryService {
       this._moves = [];
     }
 
-    if (this._overwriteFlag && this._moves.length !== 0) {
-      if (!isSameMove(this._moves[this.currentMoveIndex + 1], point)) {
+    if (this._moves.length !== 0 && this.currentMoveIndex !== this._moves.length - 1) {
+      if (!BoardService.isSameMove(this._moves[this.currentMoveIndex + 1], point)) {
         this._moves[this.currentMoveIndex + 1] = point;
         this._moves = this._moves.slice(0, this.currentMoveIndex + 2);
       }
     } else {
       this._moves.push(point);
     }
+
     this._currentMoveIndex++;
   }
 
@@ -64,25 +65,34 @@ class GameHistoryService {
     this._gameOver = gameOver;
   }
 
-  public getPreviousMove(): Point | null {
-    if (this._currentMoveIndex > 0) {
-      this._overwriteFlag = true;
-      return this._moves[--this._currentMoveIndex];
+  public getPreviousMoveIndex(): number {
+    if (this.gameMode === GameMode.PVC) {
+      this._currentMoveIndex > 1 ?
+        this._currentMoveIndex -= 2 :
+        this._currentMoveIndex = -1;
     } else {
-      this._currentMoveIndex = -1;
-      this._overwriteFlag = false;
-      return null;
+      this._currentMoveIndex > 0 ?
+        --this._currentMoveIndex :
+        this._currentMoveIndex = -1;
     }
+    return this._currentMoveIndex;
   }
 
-  public getNextMove(): Point | null {
-    this._overwriteFlag = false;
-    if (this._currentMoveIndex < this._moves.length - 1) {
-      return this._moves[++this._currentMoveIndex];
+  public getNextMove(): number {
+    if (this.gameMode === GameMode.PVC) {
+      this._currentMoveIndex < this._moves.length - 2 ?
+        this._currentMoveIndex += 2 :
+        this._currentMoveIndex = this._moves.length - 1;
     } else {
-      this._currentMoveIndex = this._moves.length - 1;
-      return null;
+      this._currentMoveIndex < this._moves.length - 1 ?
+        ++this._currentMoveIndex :
+        this._currentMoveIndex = this._moves.length - 1;
     }
+    return this._currentMoveIndex;
+  }
+
+  public getMove(index: number): Point {
+    return this._moves[index];
   }
 
   public createFromData(moves: Array<Point>, gameMode: GameMode, gameOver: boolean): void {

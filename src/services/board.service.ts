@@ -2,7 +2,7 @@ import {Point} from '../interfaces/point';
 import {Player} from '../constants';
 
 class BoardService {
-  static getWinner(board: Array<Array<Point>>, row: number, column: number): Player | null {
+  public static getWinner(board: Array<Array<Point>>, row: number, column: number): Player | null {
 
     // possible directions
     const color = board[row][column].player;
@@ -87,6 +87,11 @@ class BoardService {
       i = iOperation(i);
     }
     return tokenNum === 4;
+  }
+
+  public static isSameMove = (move1: Point, move2: Point): boolean => {
+    return (move1.x === move2.x && move1.y === move2.y
+      && move1.player === move2.player);
   }
 }
 

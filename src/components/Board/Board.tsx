@@ -5,14 +5,12 @@ import GameType from '../GameType';
 import {GameMode, Player} from '../../constants';
 import BoardService from '../../services/board.service';
 import Controls from '../Controls';
-import GameHistoryService from '../../services/gameHistory.service';
-import {Point} from '../../interfaces/point';
+import GameHistoryService from '../../services/game-history.service';
 import FileUpload from '../FileUpload';
 
 const Board = () => {
   const [board, setBoard] = useState(Array.from(Array(6), () => new Array(7).fill(null)));
   const [player, setPlayer] = useState<Player>(Player.RED);
-  const [currentMove, setCurrentMove] = useState<Point | null>(null);
   const [winner, setWinner] = useState<Player | null>(null);
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
   const [showGameTypeModal, setShowGameTypeModal] = useState(true);
@@ -43,7 +41,6 @@ const Board = () => {
         const move = {x: i, y: column, player};
         board[i][column] = move;
         history.lastMove = move;
-        setCurrentMove(move);
         // check for winner
         const winner = BoardService.getWinner(board, i, column)
         setWinner(winner);
@@ -60,6 +57,7 @@ const Board = () => {
 
   const onResetGame = () => {
     clearBoard();
+    setGameMode(null);
     setShowGameTypeModal(true);
   }
 
@@ -67,8 +65,6 @@ const Board = () => {
     setBoard(Array.from(Array(6), () => new Array(7).fill(null)));
     setPlayer(Player.RED);
     setWinner(null);
-    setCurrentMove(null);
-    setGameMode(null);
   };
 
   const onVsPlayer = (): void => {
@@ -113,8 +109,8 @@ const Board = () => {
       }
       history.createFromData(a.moves, a.gameMode, a.gameOver);
       setGameMode(a.gameMode);
-      setCurrentMove(a.moves[a.moves.length - 1]);
       setBoard(newBoard);
+      setPlayer(a.moves.length/2 === 0 ? Player.RED : Player.BLUE);
     });
     fileReader.readAsText(selectedFile!);
     setShowFileUploadModal(false);
@@ -181,29 +177,30 @@ const Board = () => {
     }
   };
 
-  const onUndoClick = (previousMove: Point | null) => {
-    if (currentMove) {
-      board[currentMove.x][currentMove.y] = null;
+  const onUndoClick = (previousMoveIndex: number) => {
+    const increment = gameMode === GameMode.PVC ? 2 : 1;
+    if (previousMoveIndex === -1) {
+      clearBoard();
+    } else {
+      // depending on the mode, undo 1 or 2 steps
+      for (let i = previousMoveIndex + increment; i > previousMoveIndex; i--) {
+        const move = history.getMove(i);
+        board[move.x][move.y] = null;
+      }
+      const move = history.getMove(previousMoveIndex);
+      setPlayer(move.player === Player.RED ? Player.BLUE : Player.RED);
     }
-    setCurrentMove(previousMove);
-    setPlayer(previousMove ?
-      previousMove.player === Player.RED ?
-        Player.BLUE :
-        Player.RED :
-      Player.RED);
   }
 
-  const onRedoClick = (nextMove: Point | null) => {
-    if (nextMove) {
-      board[nextMove.x][nextMove.y] = nextMove;
-      setCurrentMove(nextMove);
-      // @ts-ignore
-      setPlayer(nextMove ?
-        nextMove.player === Player.RED ?
-          Player.BLUE :
-          Player.RED :
-        currentMove?.player);
+  const onRedoClick = (nextMoveIndex: number) => {
+    const move = history.getMove(nextMoveIndex);
+    const decrement = gameMode === GameMode.PVC ? 1 : 0;
+    // depending on the mode, redo 1 or 2 steps
+    for (let i = nextMoveIndex - decrement; i <= nextMoveIndex; i++) {
+      const move = history.getMove(i);
+      board[move.x][move.y] = move;
     }
+    setPlayer(move.player === Player.RED ? Player.BLUE : Player.RED);
   }
 
   return (
