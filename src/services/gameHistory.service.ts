@@ -2,23 +2,22 @@ import {Point} from '../interfaces/point';
 import {GameMode} from '../constants';
 import {isSameMove} from '../utils';
 
-class FileService {
-  private static fileInstance: FileService;
+class GameHistoryService {
+  private static history: GameHistoryService;
   private _moves: Array<Point> = [];
   private _gameMode: GameMode | null = null;
   private _currentMoveIndex: number = -1;
   private _overwriteFlag = false;
   private _gameOver: boolean = false;
 
-  private constructor() {
-  }
+  private constructor() {}
 
-  public static getInstance(): FileService {
-    if (!FileService.fileInstance) {
-      FileService.fileInstance = new FileService();
+  public static getInstance(): GameHistoryService {
+    if (!GameHistoryService.history) {
+      GameHistoryService.history = new GameHistoryService();
     }
 
-    return FileService.fileInstance;
+    return GameHistoryService.history;
   }
 
   public get gameMode() {
@@ -85,8 +84,13 @@ class FileService {
       return null;
     }
   }
+
+  public createFromData(moves: Array<Point>, gameMode: GameMode, gameOver: boolean): void {
+    this._moves = moves;
+    this._gameMode = gameMode;
+    this._gameOver = gameOver;
+    this._currentMoveIndex = moves.length - 1;
+  }
 }
 
-export {
-  FileService,
-}
+export default GameHistoryService;
