@@ -7,11 +7,13 @@ import BoardService from '../../services/board.service';
 import Controls from '../Controls';
 import GameHistoryService from '../../services/game-history.service';
 import FileUpload from '../FileUpload';
+import {Point} from "../../interfaces/point";
 
 const Board = () => {
   const [board, setBoard] = useState(Array.from(Array(6), () => new Array(7).fill(null)));
   const [player, setPlayer] = useState<Player>(Player.RED);
   const [winner, setWinner] = useState<Player | null>(null);
+  const [currentMove, setCurrentMove] = useState<Point | null>(null);
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
   const [showGameTypeModal, setShowGameTypeModal] = useState(true);
   const [showGameModeModal, setShowGameModeModal] = useState(false);
@@ -41,6 +43,7 @@ const Board = () => {
         const move = {x: i, y: column, player};
         board[i][column] = move;
         history.lastMove = move;
+        setCurrentMove(move);
         // check for winner
         const winner = BoardService.getWinner(board, i, column)
         setWinner(winner);
@@ -65,6 +68,7 @@ const Board = () => {
     setBoard(Array.from(Array(6), () => new Array(7).fill(null)));
     setPlayer(Player.RED);
     setWinner(null);
+    setCurrentMove(null);
   };
 
   const onVsPlayer = (): void => {
@@ -188,6 +192,7 @@ const Board = () => {
         board[move.x][move.y] = null;
       }
       const move = history.getMove(previousMoveIndex);
+      setCurrentMove(move);
       setPlayer(move.player === Player.RED ? Player.BLUE : Player.RED);
     }
   }
@@ -199,6 +204,7 @@ const Board = () => {
     for (let i = nextMoveIndex - decrement; i <= nextMoveIndex; i++) {
       const move = history.getMove(i);
       board[move.x][move.y] = move;
+      setCurrentMove(move);
     }
     setPlayer(move.player === Player.RED ? Player.BLUE : Player.RED);
   }
