@@ -7,13 +7,14 @@ import BoardService from '../../services/board.service';
 import Controls from '../Controls';
 import GameHistoryService from '../../services/game-history.service';
 import FileUpload from '../FileUpload';
-import {Point} from "../../interfaces/point";
+import {Point} from '../../interfaces/point';
+import {GameBuilder} from "../../services/game.service";
 
 const Board = () => {
   const [board, setBoard] = useState(Array.from(Array(6), () => new Array(7).fill(null)));
   const [player, setPlayer] = useState<Player>(Player.RED);
   const [winner, setWinner] = useState<Player | null>(null);
-  const [currentMove, setCurrentMove] = useState<Point | null>(null);
+  const [, setCurrentMove] = useState<Point | null>(null);
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
   const [showGameTypeModal, setShowGameTypeModal] = useState(true);
   const [showGameModeModal, setShowGameModeModal] = useState(false);
@@ -22,17 +23,17 @@ const Board = () => {
   const history = GameHistoryService.getInstance();
 
   useEffect(() => {
-    if (player === Player.BLUE && gameMode === GameMode.PVC) {
-      // currently the computer player makes only random moves
-      // TODO; add some decisioning
-      while (true) {
-        const random = Math.floor(Math.random() * 6);
-        if (BoardService.isLegalMove(board, random)) {
-          makeMove(random);
-          break;
+    setTimeout(() => {
+      if (player === Player.BLUE && gameMode === GameMode.PVC) {
+        while (true) {
+          const random = Math.floor(Math.random() * 6);
+          if (BoardService.isLegalMove(board, random)) {
+            makeMove(random);
+            break;
+          }
         }
       }
-    }
+    }, 300);
     // eslint-disable-next-line
   }, [player])
 
@@ -103,20 +104,17 @@ const Board = () => {
     }
   };
 
-  const onFileConfirm = () => {
-    const fileReader = new FileReader();
-    fileReader.addEventListener('load', e => {
-      const a = JSON.parse(e.target?.result as string);
-      const newBoard = Array.from(Array(6), () => new Array(7).fill(null));
-      for (const move of a.moves) {
-        newBoard[move.x][move.y] = move;
-      }
-      history.createFromData(a.moves, a.gameMode, a.gameOver);
-      setGameMode(a.gameMode);
-      setBoard(newBoard);
-      setPlayer(a.moves.length/2 === 0 ? Player.RED : Player.BLUE);
-    });
-    fileReader.readAsText(selectedFile!);
+  const onFileConfirm = async () => {
+    const game = (await new GameBuilder().addFromFile(selectedFile!)).build();
+    const newBoard = Array.from(Array(6), () => new Array(7).fill(null));
+    for (const move of game.moves) {
+      newBoard[move.x][move.y] = move;
+    }
+    setBoard(newBoard);
+    setPlayer(game.currentPlayer);
+    setGameMode(game.gameMode);
+    setCurrentMove(game.moves[game.moves.length - 1]);
+    history.createFromData(game.moves, game.gameMode!);
     setShowFileUploadModal(false);
   };
 

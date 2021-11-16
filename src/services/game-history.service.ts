@@ -57,7 +57,6 @@ class GameHistoryService {
     return {
       gameMode: this.gameMode,
       moves: this._moves.slice(0, this.currentMoveIndex + 1),
-      gameOver: this._gameOver
     }
   }
 
@@ -95,10 +94,9 @@ class GameHistoryService {
     return this._moves[index];
   }
 
-  public createFromData(moves: Array<Point>, gameMode: GameMode, gameOver: boolean): void {
+  public createFromData(moves: Array<Point>, gameMode: GameMode): void {
     this._moves = moves;
     this._gameMode = gameMode;
-    this._gameOver = gameOver;
     this._currentMoveIndex = moves.length - 1;
   }
 }
