@@ -1,9 +1,8 @@
-import {Point} from '../interfaces/point';
-import {Player} from './game.service';
+import {Point} from '../interfaces';
+import {Player} from '../constants';
 
 class BoardService {
-  static getWinner(board: Array<Array<Point>>, row: number, column: number): Player | null {
-
+  public static getWinner(board: Array<Array<Point>>, row: number, column: number): Player | null {
     // possible directions
     const color = board[row][column].player;
     const left = column - 3 >= 0;
@@ -59,6 +58,15 @@ class BoardService {
     return null;
   }
 
+  public static isLegalMove(board: Array<Array<Point>>, column: number) {
+    for (let i = 0; i < board.length; ++i) {
+      if (board[i][column] === null) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private static hasWon(board: Array<Array<Point>>,
                         j: number,
                         i: number,
@@ -78,6 +86,11 @@ class BoardService {
       i = iOperation(i);
     }
     return tokenNum === 4;
+  }
+
+  public static isSameMove = (move1: Point, move2: Point): boolean => {
+    return (move1.x === move2.x && move1.y === move2.y
+      && move1.player === move2.player);
   }
 }
 

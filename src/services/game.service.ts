@@ -1,34 +1,26 @@
-import {Point} from "../interfaces/point";
+import {Point} from '../interfaces/point';
+import {GameMode, Player} from '../constants';
+import {readFileAsync} from "../utils/file";
 
-enum Player {
-  BLUE = 'b',
-  RED = 'r',
-}
-
-class GameService {
-  public positions: Array<Point> = [];
+class Game {
   public moves: Array<Point> = [];
-  public firstMove: Player = Player.RED;
+  public gameMode: GameMode | null = null;
+  public currentPlayer: Player = Player.RED;
 }
 
 class GameBuilder {
-  private game: GameService = new GameService();
+  private game: Game = new Game();
 
   constructor() {
     this.reset();
   }
 
   public reset(): void {
-    this.game = new GameService();
+    this.game = new Game();
   }
 
-  public addPositions(positions: Array<Point>): GameBuilder {
-    this.game.positions = positions;
-    return this;
-  }
-
-  public addFirstPlayer(player: Player): GameBuilder {
-    this.game.firstMove = player;
+  public addCurrentPlayer(player: Player): GameBuilder {
+    this.game.currentPlayer = player;
     return this;
   }
 
@@ -37,7 +29,19 @@ class GameBuilder {
     return this;
   }
 
-  public build(): GameService {
+  public addGameMode(gameMode: GameMode): GameBuilder {
+    this.game.gameMode = gameMode;
+    return this;
+  }
+
+  public async addFromFile(file: File): Promise<GameBuilder> {
+    const json = JSON.parse(await readFileAsync(file));
+    return this.addMoves(json.moves)
+      .addCurrentPlayer(json.moves.length % 2 === 0 ? Player.RED : Player.BLUE)
+      .addGameMode(json.gameMode);
+  }
+
+  public build(): Game {
     const result = this.game;
     this.reset();
     return result;
@@ -45,7 +49,6 @@ class GameBuilder {
 }
 
 export {
-  GameService,
+  Game,
   GameBuilder,
-  Player,
 }
