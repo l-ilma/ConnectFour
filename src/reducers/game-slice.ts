@@ -31,6 +31,7 @@ export const gameSlice = createSlice({
       state.winner = null;
       state.currentPlayer = Player.RED;
       state.gameMode = null;
+      GameHistoryService.getInstance().reset();
     },
     makeMove: (state, action) => {
       const {board} = state;

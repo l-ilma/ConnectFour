@@ -64,6 +64,13 @@ class GameHistoryService {
     this._gameOver = gameOver;
   }
 
+  public reset() {
+    this._moves = [];
+    this._gameMode = null;
+    this._currentMoveIndex = -1;
+    this._gameOver = false;
+  }
+
   public getPreviousMoveIndex(): number {
     if (this.gameMode === GameMode.PVC) {
       this._currentMoveIndex > 1 ?
